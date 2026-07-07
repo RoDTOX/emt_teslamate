@@ -1,0 +1,29 @@
+# Large files & archives
+antigravity_project.tar.gz
+*.tar.gz
+*.log
+debian_teslamate/teslamate_full.log
+debian_teslamate/teslamate.log
+
+# Elixir / Mix build output & dependencies
+debian_teslamate/_build/
+debian_teslamate/deps/
+debian_teslamate/cover/
+debian_teslamate/doc/
+debian_teslamate/.fetch
+
+# Node modules
+debian_teslamate/assets/node_modules/
+
+# Secrets
+debian_teslamate/config/*.secret.exs
+debian_teslamate/config/*.env
+debian_teslamate/.env
+
+# Agent directories & workspace configurations
+.agent/
+.devenv
+.direnv
+.idea/
+.vscode/
+.elixir_ls/
