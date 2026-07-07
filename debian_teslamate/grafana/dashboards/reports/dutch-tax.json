@@ -65,6 +65,9 @@
               "type": "auto"
             },
             "filterable": false,
+            "footer": {
+              "reducers": []
+            },
             "inspect": false
           },
           "mappings": [],
@@ -297,14 +300,6 @@
       "id": 2,
       "options": {
         "cellHeight": "sm",
-        "footer": {
-          "countRows": false,
-          "fields": "",
-          "reducer": [
-            "sum"
-          ],
-          "show": false
-        },
         "showHeader": true,
         "sortBy": [
           {
@@ -313,7 +308,7 @@
           }
         ]
       },
-      "pluginVersion": "12.1.1",
+      "pluginVersion": "13.0.1+security-01",
       "targets": [
         {
           "datasource": {
@@ -323,7 +318,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "WITH data AS (\n  SELECT\n    drives.id as drive_id,\n    round(extract(epoch FROM start_date)) * 1000 AS start_date_ts,\n    round(extract(epoch FROM end_date)) * 1000 AS end_date_ts,\n    start_km,\n    end_km,\n    CONCAT_WS(', ', CONCAT_WS(' ', start_address.road, start_address.house_number), start_address.city) AS start_address,\n    CONCAT_WS(', ', CONCAT_WS(' ', end_address.road, end_address.house_number), end_address.city) AS end_address,\n    duration_min,\n    distance\n  FROM drives\n  LEFT JOIN addresses start_address ON start_address_id = start_address.id\n  LEFT JOIN addresses end_address ON end_address_id = end_address.id\n  LEFT JOIN cars car ON car.id = drives.car_id\n  WHERE $__timeFilter(start_date) AND drives.car_id = $car_id\n  ORDER BY drive_id DESC\n)\nSELECT\n    drive_id,\n    start_date_ts,\n    convert_km(start_km::numeric, '$length_unit') as start_$length_unit,\n    start_address,\n    end_date_ts,\n    convert_km(end_km::numeric, '$length_unit') as end_$length_unit,\n    end_address,\n    duration_min,\n    convert_km(distance::numeric, '$length_unit') AS distance_$length_unit\nFROM data;",
+          "rawSql": "WITH data AS (\n  SELECT\n    drives.id as drive_id,\n    floor(extract(epoch FROM start_date)) * 1000 AS start_date_ts,\n    ceil(extract(epoch FROM end_date)) * 1000 AS end_date_ts,\n    start_km,\n    end_km,\n    CONCAT_WS(', ', CONCAT_WS(' ', start_address.road, start_address.house_number), start_address.city) AS start_address,\n    CONCAT_WS(', ', CONCAT_WS(' ', end_address.road, end_address.house_number), end_address.city) AS end_address,\n    duration_min,\n    distance\n  FROM drives\n  LEFT JOIN addresses start_address ON start_address_id = start_address.id\n  LEFT JOIN addresses end_address ON end_address_id = end_address.id\n  LEFT JOIN cars car ON car.id = drives.car_id\n  WHERE $__timeFilter(start_date) AND drives.car_id = $car_id\n  ORDER BY drive_id DESC\n)\nSELECT\n    drive_id,\n    start_date_ts,\n    convert_km(start_km::numeric, '$length_unit') as start_$length_unit,\n    start_address,\n    end_date_ts,\n    convert_km(end_km::numeric, '$length_unit') as end_$length_unit,\n    end_address,\n    duration_min,\n    convert_km(distance::numeric, '$length_unit') AS distance_$length_unit\nFROM data;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -350,7 +345,7 @@
   ],
   "preload": false,
   "refresh": "",
-  "schemaVersion": 41,
+  "schemaVersion": 42,
   "tags": [],
   "templating": {
     "list": [
@@ -369,6 +364,7 @@
         "query": "SELECT\n    id as __value,\n    CASE WHEN COUNT(id) OVER (PARTITION BY name) > 1 AND name IS NOT NULL THEN CONCAT(name, ' - ', RIGHT(vin, 6)) ELSE COALESCE(name, CONCAT('VIN ', vin)) end as __text \nFROM cars\nORDER BY display_priority ASC, name ASC, vin ASC;",
         "refresh": 1,
         "regex": "",
+        "regexApplyTo": "value",
         "type": "query"
       },
       {
@@ -386,6 +382,7 @@
         "query": "select unit_of_temperature from settings limit 1;",
         "refresh": 1,
         "regex": "",
+        "regexApplyTo": "value",
         "type": "query"
       },
       {
@@ -403,6 +400,7 @@
         "query": "select unit_of_length from settings limit 1;",
         "refresh": 1,
         "regex": "",
+        "regexApplyTo": "value",
         "type": "query"
       },
       {
@@ -419,6 +417,7 @@
         "query": "select preferred_range from settings limit 1;",
         "refresh": 1,
         "regex": "",
+        "regexApplyTo": "value",
         "type": "query"
       },
       {
@@ -435,6 +434,7 @@
         "query": "select base_url from settings limit 1;",
         "refresh": 1,
         "regex": "",
+        "regexApplyTo": "value",
         "type": "query"
       }
     ]
@@ -444,8 +444,9 @@
     "to": "now"
   },
   "timepicker": {},
-  "timezone": "",
+  "timezone": "browser",
   "title": "Drives - Dutch tax",
   "uid": "lBIoQIggk",
-  "version": 1
+  "version": 1,
+  "weekStart": ""
 }
