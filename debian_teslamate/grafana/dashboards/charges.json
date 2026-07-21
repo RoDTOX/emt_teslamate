@@ -388,7 +388,7 @@
             "properties": [
               {
                 "id": "displayName",
-                "value": "Ø Duration:"
+                "value": "\u00d8 Duration:"
               }
             ]
           }
@@ -698,8 +698,10 @@
             },
             "properties": [
               {
-                "id": "custom.hideFrom.viz",
-                "value": true
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true
+                }
               }
             ]
           },
@@ -710,8 +712,10 @@
             },
             "properties": [
               {
-                "id": "custom.hideFrom.viz",
-                "value": true
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true
+                }
               }
             ]
           },
@@ -797,7 +801,7 @@
             "properties": [
               {
                 "id": "displayName",
-                "value": "Ø Power"
+                "value": "\u00d8 Power"
               },
               {
                 "id": "unit",
@@ -847,7 +851,7 @@
             "properties": [
               {
                 "id": "displayName",
-                "value": "Ø Charge rate"
+                "value": "\u00d8 Charge rate"
               },
               {
                 "id": "unit",
@@ -921,7 +925,7 @@
             "properties": [
               {
                 "id": "displayName",
-                "value": "Ø Charge rate"
+                "value": "\u00d8 Charge rate"
               },
               {
                 "id": "unit",
@@ -944,8 +948,10 @@
             },
             "properties": [
               {
-                "id": "custom.hideFrom.viz",
-                "value": true
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true
+                }
               }
             ]
           },
@@ -1017,8 +1023,10 @@
             },
             "properties": [
               {
-                "id": "custom.hideFrom.viz",
-                "value": true
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true
+                }
               }
             ]
           },
@@ -1029,8 +1037,12 @@
             },
             "properties": [
               {
-                "id": "custom.hideFrom.viz",
-                "value": true
+                "id": "displayName",
+                "value": "End Date"
+              },
+              {
+                "id": "unit",
+                "value": "dateTimeAsLocal"
               }
             ]
           },
@@ -1149,6 +1161,62 @@
                 "value": 0
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "duration_str"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "drive_id"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "start_date_ts"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "end_date_ts"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true
+                }
+              }
+            ]
           }
         ]
       },
@@ -1263,7 +1331,140 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "/.*_ts/"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "id"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "path"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "car_id"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "duration_str"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "drive_id"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "start_date_ts"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "end_date_ts"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "end_date"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "End Date"
+              },
+              {
+                "id": "unit",
+                "value": "dateTimeAsLocal"
+              },
+              {
+                "id": "custom.minWidth",
+                "value": 150
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 6,
@@ -1308,7 +1509,7 @@
           }
         }
       ],
-      "title": "Incomplete Charges 🪫",
+      "title": "Incomplete Charges \ud83e\udeab",
       "type": "table"
     }
   ],

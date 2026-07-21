@@ -419,7 +419,7 @@
               },
               {
                 "id": "displayName",
-                "value": "Ø Consumption (net):"
+                "value": "\u00d8 Consumption (net):"
               }
             ]
           },
@@ -435,7 +435,7 @@
               },
               {
                 "id": "displayName",
-                "value": "Ø Consumption (net):"
+                "value": "\u00d8 Consumption (net):"
               }
             ]
           }
@@ -608,7 +608,7 @@
             "properties": [
               {
                 "id": "displayName",
-                "value": "Ø Consumption (net)"
+                "value": "\u00d8 Consumption (net)"
               },
               {
                 "id": "unit",
@@ -628,7 +628,7 @@
             "properties": [
               {
                 "id": "displayName",
-                "value": "Ø Consumption (net)"
+                "value": "\u00d8 Consumption (net)"
               },
               {
                 "id": "unit",
@@ -911,8 +911,10 @@
             },
             "properties": [
               {
-                "id": "custom.hideFrom.viz",
-                "value": true
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true
+                }
               }
             ]
           },
@@ -924,7 +926,7 @@
             "properties": [
               {
                 "id": "displayName",
-                "value": "Ø Speed"
+                "value": "\u00d8 Speed"
               },
               {
                 "id": "unit",
@@ -1022,7 +1024,7 @@
             "properties": [
               {
                 "id": "displayName",
-                "value": "Ø Speed"
+                "value": "\u00d8 Speed"
               },
               {
                 "id": "unit",
@@ -1093,8 +1095,10 @@
             },
             "properties": [
               {
-                "id": "custom.hideFrom.viz",
-                "value": true
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true
+                }
               }
             ]
           },
@@ -1105,8 +1109,10 @@
             },
             "properties": [
               {
-                "id": "custom.hideFrom.viz",
-                "value": true
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true
+                }
               }
             ]
           },
@@ -1117,8 +1123,10 @@
             },
             "properties": [
               {
-                "id": "custom.hideFrom.viz",
-                "value": true
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true
+                }
               }
             ]
           },
@@ -1170,7 +1178,7 @@
             "properties": [
               {
                 "id": "displayName",
-                "value": "❄"
+                "value": "\u2744"
               },
               {
                 "id": "custom.cellOptions",
@@ -1195,7 +1203,7 @@
                       "true": {
                         "color": "dark-blue",
                         "index": 0,
-                        "text": "❄"
+                        "text": "\u2744"
                       }
                     },
                     "type": "value"
@@ -1215,8 +1223,10 @@
             },
             "properties": [
               {
-                "id": "custom.hideFrom.viz",
-                "value": true
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true
+                }
               }
             ]
           },
@@ -1237,6 +1247,82 @@
               {
                 "id": "custom.minWidth",
                 "value": 90
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "id"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "path"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "start_date_ts"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "end_date_ts"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "end_date"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "End Date"
+              },
+              {
+                "id": "unit",
+                "value": "dateTimeAsLocal"
+              },
+              {
+                "id": "custom.minWidth",
+                "value": 150
               }
             ]
           }
@@ -1353,7 +1439,140 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "/.*_ts/"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "id"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "path"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "car_id"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "duration_str"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "drive_id"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "start_date_ts"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "end_date_ts"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "viz": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "end_date"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "End Date"
+              },
+              {
+                "id": "unit",
+                "value": "dateTimeAsLocal"
+              },
+              {
+                "id": "custom.minWidth",
+                "value": 150
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 7,
@@ -1398,7 +1617,7 @@
           }
         }
       ],
-      "title": "Incomplete Drives 🛣️",
+      "title": "Incomplete Drives \ud83d\udee3\ufe0f",
       "type": "table"
     }
   ],
