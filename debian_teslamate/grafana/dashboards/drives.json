@@ -1384,7 +1384,9 @@
               "car_id": true,
               "id": true,
               "duration_str": true,
-              "drive_id": true
+              "drive_id": true,
+              "start_path": true,
+              "end_path": true
             },
             "indexByName": {},
             "renameByName": {}
