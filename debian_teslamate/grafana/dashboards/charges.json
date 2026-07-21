@@ -1264,7 +1264,23 @@
         }
       ],
       "title": "Charger type: $charge_type",
-      "type": "table"
+      "type": "table",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "start_date_ts": true,
+              "end_date_ts": true,
+              "path": true,
+              "car_id": true,
+              "id": true
+            },
+            "indexByName": {},
+            "renameByName": {}
+          }
+        }
+      ]
     },
     {
       "collapsed": false,
@@ -1510,7 +1526,23 @@
         }
       ],
       "title": "Incomplete Charges \ud83e\udeab",
-      "type": "table"
+      "type": "table",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "start_date_ts": true,
+              "end_date_ts": true,
+              "path": true,
+              "car_id": true,
+              "id": true
+            },
+            "indexByName": {},
+            "renameByName": {}
+          }
+        }
+      ]
     }
   ],
   "preload": false,
