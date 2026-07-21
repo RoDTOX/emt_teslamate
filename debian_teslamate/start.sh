@@ -1,83 +1,111 @@
 #!/bin/bash
 
-# --- TeslaMate Samsung A6 Engine v56 (Connection & MQTT Fix) ---
+# --- TeslaMate Samsung A6 Engine v57 (Stability Fix) ---
+# Changes vs v56:
+#   - Services only started if not already running (idempotent)
+#   - TeslaMate runs in auto-restart loop — recovers from crashes automatically
+#   - Mosquitto is NOT killed on TeslaMate restart
+#   - Symlink /opt/teslamate/dashboards created if missing (Grafana provisioning)
+
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 export DATABASE_HOST=127.0.0.1
 LOG_FILE="/opt/teslamate/teslamate_full.log"
 
-echo "=== LOG RESTART: $(date) ===" > "$LOG_FILE"
+echo "=== START: $(date) ===" | tee -a "$LOG_FILE"
 
-cleanup() {
-    echo -e "\n\n[!] CRASH SAU OPRIRE DETECTATĂ." >> "$LOG_FILE"
-    tail -n 20 "$LOG_FILE"
-    echo "------------------------------------------------"
-    echo "Apasă ENTER pentru a ieși..."
-    read
-}
-trap cleanup EXIT
+# Fix: symlink pentru Grafana provisioning
+if [ ! -e /opt/teslamate/dashboards ]; then
+    echo "[fix] Creating missing dashboards symlink..."
+    ln -s /opt/teslamate/grafana/dashboards /opt/teslamate/dashboards
+    echo "[OK] Symlink created."
+fi
 
-{
-    # 1. Curățare procese și erori silențioase
-    echo "[1/5] Eliberare memorie și porturi..."
-    pkill -9 postgres 2>/dev/null
-    pkill -9 beam.smp 2>/dev/null
-    pkill -9 grafana-server 2>/dev/null
+# 1. Mosquitto (MQTT)
+if pgrep -x mosquitto > /dev/null; then
+    echo "[1/4] Mosquitto already running."
+else
+    echo "[1/4] Starting Mosquitto..."
     pkill -9 mosquitto 2>/dev/null
-    fuser -k 4000/tcp 3000/tcp 5432/tcp 1883/tcp 2>/dev/null
-    
-    # Curățăm lock-urile de memorie
+    sleep 1
+    mosquitto -d
+    sleep 2
+    if pgrep -x mosquitto > /dev/null; then
+        echo "[OK] Mosquitto started."
+    else
+        echo "[!] FATAL: Mosquitto failed. Aborting."
+        exit 1
+    fi
+fi
+
+# 1.1 Cron
+service cron start 2>/dev/null
+
+# 1.2 Tunel Acvariu (Proxy)
+pkill -f "socat TCP-LISTEN:8080" 2>/dev/null
+nohup socat TCP-LISTEN:8080,fork,reuseaddr TCP:192.168.1.32:80 > /dev/null 2>&1 &
+
+# 2. PostgreSQL
+if sudo -u postgres /usr/lib/postgresql/17/bin/pg_isready -h 127.0.0.1 > /dev/null 2>&1; then
+    echo "[2/4] PostgreSQL already running."
+else
+    echo "[2/4] Starting PostgreSQL..."
+    pkill -9 postgres 2>/dev/null
     rm -f /var/lib/postgresql/17/main/postmaster.pid 2>/dev/null
     rm -rf /tmp/.s.PGSQL.* 2>/dev/null
     mkdir -p /var/run/postgresql
     chown -R postgres:postgres /var/run/postgresql
-    
-    # Încercăm curățarea cache-ului fără să afișăm eroarea de permisiuni
     sync; echo 3 > /proc/sys/vm/drop_caches 2>/dev/null
 
-    # 2. Pornire Mosquitto (CRITIC: TeslaMate moare fără MQTT)
-    echo "[2/5] Pornire Serviciu Mesagerie (MQTT)..."
-    service mosquitto start || mosquitto -d
+    sudo -u postgres /usr/lib/postgresql/17/bin/pg_ctl \
+        -D /var/lib/postgresql/17/main \
+        -l /var/lib/postgresql/17/main/logfile \
+        -o "-c shared_memory_type=mmap -c shared_buffers=12MB -c max_connections=25 -c fsync=off" \
+        start
 
-    #2.1 Pornire backup service - chron
-    service cron start
-
-    # --- 2.2 Pornire Tunel Acvariu (Proxy) ---
-    echo "[2.2/5] Pornire Proxy Acvariu pe portul 8080..."
-    pkill -f "socat TCP-LISTEN:8080" 2>/dev/null
-    nohup socat TCP-LISTEN:8080,fork,reuseaddr TCP:192.168.1.32:80 > /dev/null 2>&1 &
-
-    # 3. Pornire PostgreSQL (Fix: Creștem conexiunile la 20)
-    echo "[3/5] Pornire Bază de Date (Fix Connections)..."
-    sudo -u postgres /usr/lib/postgresql/17/bin/pg_ctl -D /var/lib/postgresql/17/main -l /var/lib/postgresql/17/main/logfile -o "-c shared_memory_type=mmap -c shared_buffers=12MB -c max_connections=25 -c fsync=off" start
-    
     for i in {1..15}; do
-        if sudo -u postgres /usr/lib/postgresql/17/bin/pg_isready -h 127.0.0.1 > /dev/null 2>&1; then
-            echo "[OK] DB Gata."
-            break
-        fi
-        [ $i -eq 15 ] && echo "[!] DB Timeout." && exit 1
+        sudo -u postgres /usr/lib/postgresql/17/bin/pg_isready -h 127.0.0.1 > /dev/null 2>&1 \
+            && echo "[OK] DB ready." && break
+        [ $i -eq 15 ] && echo "[!] DB timeout." && exit 1
         sleep 2
     done
+fi
 
-    # 4. Pornire Grafana
-    echo "[4/5] Pornire Grafana..."
+# 3. Grafana
+if pgrep grafana-server > /dev/null; then
+    echo "[3/4] Grafana already running."
+else
+    echo "[3/4] Starting Grafana..."
     /usr/share/grafana/bin/grafana-server \
-      --config=/etc/grafana/grafana.ini \
-      --homepath=/usr/share/grafana \
-      cfg:default.paths.logs=/var/log/grafana \
-      cfg:default.paths.data=/var/lib/grafana &
+        --config=/etc/grafana/grafana.ini \
+        --homepath=/usr/share/grafana \
+        cfg:default.paths.logs=/var/log/grafana \
+        cfg:default.paths.data=/var/lib/grafana >> "$LOG_FILE" 2>&1 &
+    echo "[OK] Grafana started."
+fi
 
-    # 5. Pornire TeslaMate
-    echo "[5/5] Pornire TeslaMate Core..."
-    cd /opt/teslamate
-    export $(grep -v '^#' .env | xargs)
-    export DATABASE_HOST=127.0.0.1
-    
-    # Repară tabelele dacă e cazul
-    mix ecto.migrate
-    
-    echo "[!] Cinderella se trezește..."
-    mix phx.server
+# 4. TeslaMate cu restart automat
+echo "[4/4] Starting TeslaMate (auto-restart loop)..."
+cd /opt/teslamate
+export $(grep -v '^#' .env | xargs)
+export DATABASE_HOST=127.0.0.1
 
-} 2>&1 | tee -a "$LOG_FILE"
+echo "Running DB migrations..."
+mix ecto.migrate 2>&1 | tee -a "$LOG_FILE"
+
+echo "[!] Cinderella se trezeste..."
+while true; do
+    echo "=== TeslaMate START: $(date) ===" | tee -a "$LOG_FILE"
+    mix phx.server 2>&1 | tee -a "$LOG_FILE"
+    echo "=== TeslaMate EXIT: $(date) ===" | tee -a "$LOG_FILE"
+
+    # Reporneste Mosquitto daca a cazut
+    if ! pgrep -x mosquitto > /dev/null; then
+        echo "[!] Mosquitto died! Restarting..." | tee -a "$LOG_FILE"
+        mosquitto -d
+        sleep 3
+    fi
+
+    echo "[!] TeslaMate reporneste in 15 secunde..." | tee -a "$LOG_FILE"
+    sleep 15
+done
