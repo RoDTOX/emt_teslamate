@@ -1441,8 +1441,8 @@
         "overrides": [
           {
             "matcher": {
-              "id": "byFrameRefID",
-              "options": "Median"
+              "id": "byRegexp",
+              "options": ".*Median.*"
             },
             "properties": [
               {
@@ -1454,6 +1454,12 @@
                 "value": {
                   "fixedColor": "dark-red",
                   "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.pointSize",
+                "value": {
+                  "fixed": 0
                 }
               }
             ]
