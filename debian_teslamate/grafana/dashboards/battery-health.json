@@ -1523,8 +1523,8 @@
             },
             "frame": {
               "matcher": {
-                "id": "byIndex",
-                "options": 0
+                "id": "byName",
+                "options": "Projected Range"
               }
             },
             "x": {
@@ -1543,8 +1543,8 @@
           {
             "frame": {
               "matcher": {
-                "id": "byIndex",
-                "options": 1
+                "id": "byName",
+                "options": "Median"
               }
             },
             "x": {
