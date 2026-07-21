@@ -1273,8 +1273,7 @@
               "start_date_ts": true,
               "end_date_ts": true,
               "path": true,
-              "car_id": true,
-              "id": true
+              "car_id": true
             },
             "indexByName": {},
             "renameByName": {}
@@ -1535,8 +1534,7 @@
               "start_date_ts": true,
               "end_date_ts": true,
               "path": true,
-              "car_id": true,
-              "id": true
+              "car_id": true
             },
             "indexByName": {},
             "renameByName": {}
