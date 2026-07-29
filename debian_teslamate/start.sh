@@ -76,7 +76,7 @@ if pgrep grafana-server > /dev/null; then
     echo "[3/4] Grafana already running."
 else
     echo "[3/4] Starting Grafana..."
-    /usr/share/grafana/bin/grafana-server \
+    nohup /usr/share/grafana/bin/grafana-server \
         --config=/etc/grafana/grafana.ini \
         --homepath=/usr/share/grafana \
         cfg:default.paths.logs=/var/log/grafana \
@@ -95,9 +95,9 @@ mix ecto.migrate 2>&1 | tee -a "$LOG_FILE"
 
 echo "[!] Cinderella se trezeste..."
 while true; do
-    echo "=== TeslaMate START: $(date) ===" | tee -a "$LOG_FILE"
-    mix phx.server 2>&1 | tee -a "$LOG_FILE"
-    echo "=== TeslaMate EXIT: $(date) ===" | tee -a "$LOG_FILE"
+    echo "=== TeslaMate START: $(date) ===" >> "$LOG_FILE"
+    mix phx.server >> "$LOG_FILE" 2>&1
+    echo "=== TeslaMate EXIT: $(date) ===" >> "$LOG_FILE"
 
     # Reporneste Mosquitto daca a cazut
     if ! pgrep -x mosquitto > /dev/null; then

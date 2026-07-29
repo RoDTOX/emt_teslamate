@@ -50,8 +50,9 @@ defmodule Util do
   end
 
   def choose_http_binding_address() do
-    port = Util.get_env("PORT", prod: "4000", dev: "4000", test: "4002")
-    defaults = [transport_options: [socket_opts: [:inet6]], port: port]
+    port_str = Util.get_env("PORT", prod: "4000", dev: "4000", test: "4002")
+    port = String.to_integer(port_str)
+    defaults = [ip: {0, 0, 0, 0}, port: port]
 
     case System.get_env("HTTP_BINDING_ADDRESS", "") do
       "" ->

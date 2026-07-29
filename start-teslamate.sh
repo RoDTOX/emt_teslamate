@@ -33,6 +33,7 @@ echo "[OK] WakeLock activat."
 tmux kill-session -t teslamate 2>/dev/null
 pkill -f metrics_pusher.sh 2>/dev/null
 pkill -f alert_manager.sh 2>/dev/null
+pkill -f watchdog.sh 2>/dev/null
 echo "[OK] Sesiuni vechi curatate."
 
 # --- 3. LANSARE SERVICII ---
@@ -42,13 +43,14 @@ tmux new-session -d -s teslamate "proot-distro login debian -- /bin/bash /opt/te
 
 # Pornire Telemetrie Termux (Metrics & Alerte)
 echo "[+] Se porneste telemetria in fundal..."
-nohup ./metrics_pusher.sh > /dev/null 2>&1 &
-nohup ./alert_manager.sh > /dev/null 2>&1 &
+[ -f "./metrics_pusher.sh" ] && nohup ./metrics_pusher.sh > /dev/null 2>&1 &
+[ -f "./alert_manager.sh" ] && nohup ./alert_manager.sh > /dev/null 2>&1 &
 
-# Pornire Watchdog (Gardianul)
+# Pornire Watchdog (Gardianul Autonom de Auto-Reparare)
 if [ -f "./watchdog.sh" ]; then
+    chmod +x ./watchdog.sh ./view.sh 2>/dev/null
     nohup ./watchdog.sh > /dev/null 2>&1 &
-    echo "[OK] Watchdog activat."
+    echo "[OK] Watchdog activat (Auto-reparare rețea, SSH, TeslaMate & Grafana)."
 fi
 
 # --- 4. ACTIVARE REȚEA EXTERNĂ (LA FINAL) ---

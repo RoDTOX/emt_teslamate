@@ -4,13 +4,7 @@ config :teslamate, TeslaMateWeb.Endpoint,
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
-  watchers: [
-    node: [
-      "scripts/build.js",
-      cd: Path.expand("../assets", __DIR__),
-      env: %{"NODE_ENV" => "development"}
-    ]
-  ],
+  watchers: [],
   live_reload: [
     patterns: [
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
