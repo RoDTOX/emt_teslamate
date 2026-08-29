@@ -29,6 +29,8 @@ chmod +x "$REPO_DIR/start-teslamate.sh"
 chmod +x "$REPO_DIR/stop-teslamate.sh"
 chmod +x "$REPO_DIR/watchdog.sh"
 chmod +x "$REPO_DIR/view.sh"
+chmod +x "$REPO_DIR/alert_manager.sh" 2>/dev/null
+chmod +x "$REPO_DIR/metrics_pusher.sh" 2>/dev/null
 
 echo "[SUCCESS] Termux:Boot script installed at: $BOOT_SCRIPT"
 echo "[INFO] Make sure Termux:Boot app is installed and launched once on the phone."

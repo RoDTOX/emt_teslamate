@@ -1,8 +1,10 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 # ==============================================================================
-# PROJECT CINDERELLA - AUTONOMOUS WATCHDOG & SELF-HEALING ENGINE v1.2
+# PROJECT CINDERELLA - AUTONOMOUS WATCHDOG & SELF-HEALING ENGINE v2.0
 # Target: Samsung Galaxy A6 (Termux + Debian proot)
+# Supervised: Network, SSHD, TeslaMate, Grafana, Mosquitto, Tailscale
+# Guarantee: 100% Isolated from SmartHome or external experiments
 # ==============================================================================
 
 LOG_FILE="$HOME/watchdog.log"
@@ -11,17 +13,27 @@ FAIL_COUNT_NET=0
 CYCLE_COUNT=0
 
 log_msg() {
+    # Auto-rotatie log daca depaseste 2MB
+    if [ -f "$LOG_FILE" ] && [ $(wc -c < "$LOG_FILE") -gt 2097152 ]; then
+        tail -n 500 "$LOG_FILE" > "${LOG_FILE}.tmp" && mv "${LOG_FILE}.tmp" "$LOG_FILE"
+    fi
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" | tee -a "$LOG_FILE"
 }
 
-log_msg "=== WATCHDOG ENGINE INITIALIZED ==="
+log_msg "=== WATCHDOG ENGINE INITIALIZED (v2.0 Bulletproof) ==="
 
 while true; do
     CYCLE_COUNT=$((CYCLE_COUNT + 1))
 
-    # --- 1. DOZE MODE & WAKELOCK HEALING ---
+    # --- 1. DOZE MODE & WAKELOCK & OOM PROTECTION ---
     su -c "dumpsys deviceidle disable" > /dev/null 2>&1
     termux-wake-lock > /dev/null 2>&1
+
+    # Imunitate OOM Killer pentru Termux
+    TERMUX_PID=$(pgrep -x "termux" 2>/dev/null || pgrep -x "bash" 2>/dev/null | head -n 1)
+    if [ -n "$TERMUX_PID" ]; then
+        su -c "echo -1000 > /proc/$TERMUX_PID/oom_score_adj" > /dev/null 2>&1
+    fi
 
     # --- 2. SSHD DAEMON RECOVERY ---
     if ! pgrep -x "sshd" > /dev/null 2>&1; then

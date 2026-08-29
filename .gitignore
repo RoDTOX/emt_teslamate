@@ -27,3 +27,4 @@ debian_teslamate/.env
 .idea/
 .vscode/
 .elixir_ls/
+.last_alert_level
