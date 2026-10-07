@@ -83,5 +83,14 @@ while true; do
         su -c "monkey -p com.tailscale.ipn 1" > /dev/null 2>&1
     fi
 
+    # --- 7. GUARDIAN & METRICS SUPERVISION ---
+    if ! tmux has-session -t guardian 2>/dev/null; then
+        tmux new-session -d -s guardian "bash $HOME/alert_manager.sh"
+    fi
+    if ! pgrep -f "metrics_pusher.sh" > /dev/null 2>&1; then
+        nohup bash "$HOME/metrics_pusher.sh" > /dev/null 2>&1 &
+    fi
+
     sleep 30
 done
+

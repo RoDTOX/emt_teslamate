@@ -112,6 +112,17 @@
             >
               <span class="icon"><i class="mdi mdi-map-marker-radius"></i></span>&nbsp;<span><%= gettext("Geo-Fences") %></span>
             </.link>
+            <a
+              id="aquarium-nav-item"
+              href="javascript:void(0)"
+              onclick="window.open('http://' + (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '192.168.1.28' : window.location.hostname) + ':8080/', '_blank')"
+              class="navbar-item mr-5"
+              title="Aquatlantis Smart Aquarium (Click to open)"
+              style="display: flex; align-items: center; gap: 4px;"
+            >
+              <span class="icon" style="font-size: 16px;">🐠</span>&nbsp;<span>Acvariu</span>&nbsp;
+              <span id="aquarium-status-dot" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: #94a3b8; transition: all 0.3s; margin-left: 2px;"></span>
+            </a>
             <.link
               navigate={Routes.live_path(@conn, TeslaMateWeb.SettingsLive.Index)}
               class="navbar-item  mr-5"
@@ -190,5 +201,31 @@
         <% end %>
       </div>
     </footer>
+    <script>
+      (function monitorAquarium() {
+        const dot = document.getElementById('aquarium-status-dot');
+        if (!dot) return;
+        const host = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? '192.168.1.28' : window.location.hostname;
+        fetch('http://' + host + ':8080/api/status', { method: 'GET', signal: AbortSignal.timeout(2000) })
+          .then(r => r.ok ? r.json() : null)
+          .then(data => {
+            if (data && data.ip) {
+              dot.style.backgroundColor = '#10b981';
+              dot.style.boxShadow = '0 0 6px rgba(16, 185, 129, 0.9)';
+              dot.parentElement.title = 'Acvariu Online (' + data.mode + ') • Click to open';
+            } else {
+              dot.style.backgroundColor = '#94a3b8';
+              dot.style.boxShadow = 'none';
+              dot.parentElement.title = 'Acvariu Offline / Unreachable';
+            }
+          })
+          .catch(() => {
+            dot.style.backgroundColor = '#94a3b8';
+            dot.style.boxShadow = 'none';
+            dot.parentElement.title = 'Acvariu Offline / Unreachable';
+          });
+        setTimeout(monitorAquarium, 10000);
+      })();
+    </script>
   </body>
 </html>

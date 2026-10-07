@@ -39,10 +39,15 @@ echo "[OK] Sesiuni vechi curatate."
 echo "[+] Se deschide portalul catre Debian (TeslaMate, Postgres, Grafana)..."
 tmux new-session -d -s teslamate "proot-distro login debian -- /bin/bash /opt/teslamate/start.sh"
 
-# Pornire Telemetrie Termux (Metrics & Alerte)
+# Pornire Telemetrie Termux (Metrics & Alerte Guardian v4.0)
 echo "[+] Se porneste telemetria in fundal..."
 [ -f "./metrics_pusher.sh" ] && chmod +x ./metrics_pusher.sh && nohup ./metrics_pusher.sh > /dev/null 2>&1 &
-[ -f "./alert_manager.sh" ] && chmod +x ./alert_manager.sh && nohup ./alert_manager.sh > /dev/null 2>&1 &
+if [ -f "./alert_manager.sh" ]; then
+    chmod +x ./alert_manager.sh
+    tmux kill-session -t guardian 2>/dev/null || true
+    tmux new-session -d -s guardian "bash $HOME/alert_manager.sh"
+    echo "[OK] Alert Manager v4.0 Unified Guardian pornit în sesiune persistentă tmux."
+fi
 
 # Pornire Automata Smart Home BLE Gateway (Xiaomi Thermometers & Grafana)
 SMARTHOME_DIR="$HOME/smart-home-ble-gateway"
